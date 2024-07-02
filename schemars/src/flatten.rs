@@ -12,12 +12,29 @@ impl Schema {
         } else if is_null_type(&other) {
             return self;
         }
-        let s1: SchemaObject = self.into();
-        let s2: SchemaObject = other.into();
-        Schema::Object(s1.merge(s2))
+        let mut s1: SchemaObject = self.into();
+        let mut s2: SchemaObject = other.into();
+
+        // FORK: added
+        // additional_properties: false does not work with allOf
+        s1.object().additional_properties = None;
+        s2.object().additional_properties = None;
+
+        Schema::Object(SchemaObject {
+            subschemas: Some(Box::new(SubschemaValidation {
+                all_of: Some(vec![s1.into(), s2.into()]),
+                ..Default::default()
+            })),
+            ..Default::default()  
+        })
+
+        // FORK: commented
+        // Schema::Object(s1.merge(s2))
     }
 }
 
+// FORK: add #[allow(unused)]
+#[allow(unused)]
 pub(crate) trait Merge: Sized {
     fn merge(self, other: Self) -> Self;
 }

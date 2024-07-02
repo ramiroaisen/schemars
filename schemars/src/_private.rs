@@ -85,7 +85,10 @@ pub fn new_externally_tagged_enum(variant: &str, sub_schema: Schema) -> Schema {
             // one could easily construct an object that validated against
             // multiple variants since here it's the properties rather than
             // the values of a property that distingish between variants.
-            additional_properties: Some(Box::new(false.into())),
+            
+            // FORK: commented
+            // additional_properties: Some(Box::new(false.into())),
+            
             ..Default::default()
         })),
         ..SchemaObject::default()
